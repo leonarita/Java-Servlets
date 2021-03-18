@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+/* Template custom style */
+
 .bd-placeholder-img {
 	font-size: 1.125rem;
 	text-anchor: middle;
@@ -28,6 +30,8 @@ footer {
 	text-align: center;
 }
 
+/* DataTable custom style */
+
 table.dataTable thead .sorting:after, table.dataTable thead .sorting:before,
 	table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_asc:before,
 	table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_asc_disabled:before,
@@ -37,6 +41,27 @@ table.dataTable thead .sorting:after, table.dataTable thead .sorting:before,
 	bottom: .5em;
 }
 
-.div-oculta {
+/* Alert custom style */
+
+.div-oculta, .elemOculto {
 	display: none !important;
+}
+
+/* Grid view custom style */
+
+.profile-block {
+	border: solid 1px #000000;	
+}
+
+.profile-name, .profile-phone, .profile-email, .profile-view {
+	text-align: center;
+}
+
+.profile-email {
+	text-decoration: underline;
+}
+
+.profile-name {
+	font-weight: bolder;
+	font-size: 22px;
 }

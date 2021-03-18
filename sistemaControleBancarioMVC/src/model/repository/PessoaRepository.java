@@ -1,5 +1,6 @@
 package model.repository;
 
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,8 +21,7 @@ public class PessoaRepository extends PersistenceConfig
 			transaction.begin();
 			getEntityManager().persist(pessoa);
 			transaction.commit();
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			System.out.println("Erro ao tentar persistir uma nova pessoa! " + e.getMessage());
 			e.printStackTrace();
@@ -39,8 +39,41 @@ public class PessoaRepository extends PersistenceConfig
 		try
 		{
 			resultado = getEntityManager().find(Pessoa.class, id);
+		} catch (Exception e)
+		{
+			System.out.println("Erro ao tentar recuperar a pessoa! " + e.getMessage());
+			e.printStackTrace();
 		}
-		catch (Exception e)
+		
+		return resultado;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Pessoa recuperarPessoaPorEmail(String email)
+	{
+		Set<Pessoa> pessoaSet = null;
+		Pessoa resultado = null;
+		
+		try
+		{
+			// HQL: FROM Pessoa WHERE email = ?
+			Stream<Pessoa> pessoaStream = getEntityManager()
+					.createQuery("FROM " + Pessoa.class.getName() + " WHERE email = :email")
+					.setParameter("email", email).getResultStream();
+			
+			pessoaSet = pessoaStream.collect(Collectors.toSet());
+			
+			if (pessoaSet != null && !pessoaSet.isEmpty())
+			{
+				
+				for (Pessoa p : pessoaSet)
+				{
+					resultado = p;
+					break;
+				}
+			}
+			
+		} catch (Exception e)
 		{
 			System.out.println("Erro ao tentar recuperar a pessoa! " + e.getMessage());
 			e.printStackTrace();
@@ -56,14 +89,41 @@ public class PessoaRepository extends PersistenceConfig
 		
 		try
 		{
-			// HQL: FROM Pessoa ORDER BY idPessoa ASC
-			Stream<Pessoa> pessoasStream =
-					getEntityManager().createQuery("FROM " + Pessoa.class.getName() +
-						" ORDER BY idPessoa ASC").getResultStream();
+			// HQL: FROM Pessoa
+			Stream<Pessoa> pessoasStream = getEntityManager()
+					.createQuery("FROM " + Pessoa.class.getName()).getResultStream();
 			
-			resultado = pessoasStream.collect(Collectors.toSet());
+			resultado = pessoasStream
+			  .sorted(Comparator.comparing(Pessoa::getNomePessoa)) //comparator - how you want to sort it
+			  .collect(Collectors.toSet());
+		} catch (Exception e)
+		{
+			System.out.println("Erro ao tentar recuperar as pessoas cadastradas! " + e.getMessage());
+			e.printStackTrace();
 		}
-		catch (Exception e)
+		
+		return resultado;
+	}
+	
+
+	
+	@SuppressWarnings("unchecked")
+	public static Set<Pessoa> recuperarPessoasPorStatus(int status)
+	{
+		Set<Pessoa> resultado = null;
+		
+		try
+		{
+			// HQL: FROM Pessoa WHERE situacaoPessoa = ?
+			Stream<Pessoa> pessoasStream = getEntityManager()
+					.createQuery("FROM " + Pessoa.class.getName() + " WHERE situacaoPessoa = :status")
+					.setParameter("status", status)
+					.getResultStream();
+			
+			resultado = pessoasStream
+			  .sorted(Comparator.comparing(Pessoa::getNomePessoa)) //comparator - how you want to sort it
+			  .collect(Collectors.toSet());
+		} catch (Exception e)
 		{
 			System.out.println("Erro ao tentar recuperar as pessoas cadastradas! " + e.getMessage());
 			e.printStackTrace();
@@ -82,8 +142,7 @@ public class PessoaRepository extends PersistenceConfig
 			transaction.begin();
 			getEntityManager().merge(pessoa);
 			transaction.commit();
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			System.out.println("Erro ao tentar atualizar os dados da pessoa! " + e.getMessage());
 			e.printStackTrace();
@@ -100,13 +159,12 @@ public class PessoaRepository extends PersistenceConfig
 		EntityTransaction transaction = getEntityManager().getTransaction();
 		
 		try
-		{	
+		{
 			transaction.begin();
 			pessoa = getEntityManager().find(Pessoa.class, pessoa.getIdPessoa());
 			getEntityManager().remove(pessoa);
 			transaction.commit();
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			System.out.println("Erro ao tentar remover a pessoa! " + e.getMessage());
 			e.printStackTrace();
@@ -125,8 +183,7 @@ public class PessoaRepository extends PersistenceConfig
 		{
 			Pessoa pessoa = recuperarPessoaPorId(id);
 			resultado = excluirPessoa(pessoa);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			System.out.println("Erro ao tentar remover a pessoa! " + e.getMessage());
 			e.printStackTrace();

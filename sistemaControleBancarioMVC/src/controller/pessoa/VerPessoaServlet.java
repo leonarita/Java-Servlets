@@ -1,7 +1,6 @@
 package controller.pessoa;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,17 +15,17 @@ import model.repository.PessoaRepository;
 import utils.cookie.CookieUtils;
 
 /**
- * Servlet implementation class ExcluirPessoaServlet
+ * Servlet implementation class VerPessoaServlet
  */
-@WebServlet("/pessoa/excluir")
-public class ExcluirPessoaServlet extends HttpServlet
+@WebServlet("/pessoa/ver")
+public class VerPessoaServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public ExcluirPessoaServlet()
+	public VerPessoaServlet()
 	{
 		super();
 		// TODO Auto-generated constructor stub
@@ -45,6 +44,7 @@ public class ExcluirPessoaServlet extends HttpServlet
 			int idPessoa = 0;
 			Pessoa p = null;
 			String pIdPessoa = request.getParameter("idpessoa");
+			String nomePessoa = "";
 			
 			if (pIdPessoa != null)
 			{
@@ -68,10 +68,15 @@ public class ExcluirPessoaServlet extends HttpServlet
 			if (idPessoa > 0)
 			{
 				p = PessoaRepository.recuperarPessoaPorId(idPessoa);
+				
+				if (p != null)
+				{
+					nomePessoa = p.getNomePessoa();
+				}
 			}
 			
-			request.setAttribute("tituloPagina", "Confirmar Exclusão de Pessoa");
-			request.setAttribute("pathPagina", "/pessoa/excluir.jsp");
+			request.setAttribute("tituloPagina", "Perfil de " + nomePessoa);
+			request.setAttribute("pathPagina", "/pessoa/ver.jsp");
 			request.setAttribute("pessoa", p);
 		}
 		else
@@ -98,6 +103,8 @@ public class ExcluirPessoaServlet extends HttpServlet
 		if ("OK".equals(session.getAttribute("usuarioAutenticado")) && CookieUtils.temAutorizacao(request.getCookies()))
 		{
 			int idPessoa = 0;
+			Pessoa p = null;
+			String nomePessoa = "";
 			String pIdPessoa = request.getParameter("numIdPessoa");
 			
 			if (pIdPessoa != null)
@@ -121,22 +128,37 @@ public class ExcluirPessoaServlet extends HttpServlet
 			
 			if (idPessoa > 0)
 			{
-				Pessoa p = PessoaRepository.recuperarPessoaPorId(idPessoa);
+				p = PessoaRepository.recuperarPessoaPorId(idPessoa);
 				
 				if (p != null)
 				{
-					PessoaRepository.excluirPessoa(p);
-					request.setAttribute("mensagemAlerta", "Pessoa excluída com sucesso!");
+					p.setNomePessoa(request.getParameter("txtNome"));
+					p.setEnderecoPessoa(request.getParameter("txtEndereco"));
+					p.setCepPessoa(Long.parseLong(request.getParameter("numCep")));
+					p.setTelefonePessoa(request.getParameter("txtTelefone"));
+					p.setEmail(request.getParameter("txtEmail"));
+					p.setRendaPessoa(Double.parseDouble(request.getParameter("numRenda").replace(',', '.')));
+					p.setSituacaoPessoa("on".equals(request.getParameter("chkAtivo")) ? 1 : 0);
+					p.setSenha(request.getParameter("txtSenha"));
+					
+					PessoaRepository.atualizarPessoa(p);
+					
+					request.setAttribute("mensagemAlerta", "Cadastro atualizado com sucesso!");
 				}
 			}
 			
-			Set<Pessoa> pessoas = PessoaRepository.recuperarPessoas();
+			p = PessoaRepository.recuperarPessoaPorId(idPessoa);
+			
+			if (p != null)
+			{
+				nomePessoa = p.getNomePessoa();
+			}
 			
 			PessoaRepository.closeEntityManager();
 			
-			request.setAttribute("pessoasCadastradas", pessoas);
-			request.setAttribute("tituloPagina", "Cadastro de Pessoas");
-			request.setAttribute("pathPagina", "/pessoa/listar.jsp");
+			request.setAttribute("tituloPagina", "Perfil de " + nomePessoa);
+			request.setAttribute("pathPagina", "/pessoa/ver.jsp");
+			request.setAttribute("pessoa", p);
 		}
 		else
 		{

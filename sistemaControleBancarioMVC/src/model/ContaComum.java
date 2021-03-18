@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -25,24 +27,25 @@ public class ContaComum implements Serializable
 	private static final long serialVersionUID = 1l;
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "numeroconta")
 	protected long numeroConta;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "aberturaconta", nullable = false)
 	protected Calendar aberturaConta;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "fechamentoconta")
 	protected Calendar fechamentoConta;
 	
-	@Column(name = "situacaoconta")
+	@Column(name = "situacaoconta", nullable = false)
 	protected int situacaoConta;
 	
-	@Column(name = "senhaconta")
+	@Column(name = "senhaconta", nullable = false)
 	protected int senhaConta;
 	
-	@Column(name = "saldoconta")
+	@Column(name = "saldoconta", nullable = false)
 	protected double saldoConta;
 	
 	// FetchType.LAZY -> Diz ao provedor de persistência para não buscar as entidades associadas no banco de dados até que elas sejam necessárias.

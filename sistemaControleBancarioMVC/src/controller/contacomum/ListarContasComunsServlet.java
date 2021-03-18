@@ -1,4 +1,4 @@
-package controller.pessoa;
+package controller.contacomum;
 
 import java.io.IOException;
 import java.util.Set;
@@ -11,22 +11,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.Pessoa;
-import model.repository.PessoaRepository;
+import model.ContaComum;
+import model.repository.ContaComumRepository;
 import utils.cookie.CookieUtils;
 
 /**
- * Servlet implementation class PessoaServlet
+ * Servlet implementation class ListarContasComunsServlet
  */
-@WebServlet({ "/pessoa", "/pessoa/listar" })
-public class ListarPessoasServlet extends HttpServlet
+@WebServlet({ "/contacomum", "/contacomum/listar" })
+public class ListarContasComunsServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public ListarPessoasServlet()
+	public ListarContasComunsServlet()
 	{
 		super();
 		// TODO Auto-generated constructor stub
@@ -42,21 +42,12 @@ public class ListarPessoasServlet extends HttpServlet
 		
 		if ("OK".equals(session.getAttribute("usuarioAutenticado")) && CookieUtils.temAutorizacao(request.getCookies()))
 		{
-			int view = 1;
-			String viewStr = (String) request.getParameter("view");
+			Set<ContaComum> pessoas = ContaComumRepository.recuperarContasComuns();
 			
-			if ("2".equals(viewStr))
-				view = Integer.parseInt(viewStr); // view = 2;
+			request.setAttribute("contasCadastradas", pessoas);
+			request.setAttribute("tituloPagina", "Cadastro de Contas");
 			
-			Set<Pessoa> pessoas = PessoaRepository.recuperarPessoas();
-			
-			request.setAttribute("pessoasCadastradas", pessoas);
-			request.setAttribute("tituloPagina", "Cadastro de Pessoas");
-			
-			if (view == 1)
-				request.setAttribute("pathPagina", "/pessoa/listar.jsp");
-			else
-				request.setAttribute("pathPagina", "/pessoa/listar2.jsp");
+			request.setAttribute("pathPagina", "/contacomum/listar.jsp");
 		}
 		else
 		{
@@ -70,4 +61,5 @@ public class ListarPessoasServlet extends HttpServlet
 		
 		rd.forward(request, response);
 	}
+	
 }

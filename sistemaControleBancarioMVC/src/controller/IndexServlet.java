@@ -12,29 +12,33 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class IndexServlet
  */
-@WebServlet({"/default", "/home", "/index", "/"})
-public class IndexServlet extends HttpServlet {
+@WebServlet({ "/default", "/home", "/index" })
+public class IndexServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public IndexServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
+	
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public IndexServlet()
+	{
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		request.setAttribute("tituloPagina", "Sistema de Controle Bancário");
 		request.setAttribute("subtituloPagina", "Seja bem-vindo!");
+		request.setAttribute("doServidor", true);
 		request.setAttribute("pathPagina", "/home.jsp");
 		
 		RequestDispatcher rd = request.getRequestDispatcher("/template.jsp");
 		
-		rd.forward(request,response);
+		rd.forward(request, response);
 	}
-
 }
