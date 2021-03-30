@@ -3,6 +3,7 @@
 <%@ page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 
+<%@page import="java.util.Base64"%>
 <%@ page import="java.util.Date"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Locale"%>
@@ -23,6 +24,16 @@ if (doServidor == null || !doServidor)
 <%
 Pessoa p = (Pessoa) request.getAttribute("pessoa");
 
+long idFotoPerfil = 0;
+String fotoPerfilBase64 = "", fotoPerfilContentType = "";
+
+if(p.getFotoPerfil() != null && p.getFotoPerfil().getArquivo() != null)
+{
+	idFotoPerfil = p.getFotoPerfil().getId();
+	fotoPerfilBase64 = Base64.getEncoder().encodeToString(p.getFotoPerfil().getArquivo());
+	fotoPerfilContentType = p.getFotoPerfil().getContentType();
+}
+
 Set<ContaComum> contasRelacionadas = new HashSet<ContaComum>();
 
 if(p.getContas() != null)
@@ -31,16 +42,15 @@ if(p.getContas() != null)
 Locale local = new Locale("pt", "BR");
 NumberFormat nf = NumberFormat.getCurrencyInstance(local);
 
-String classDivVisualizacao = "div-oculta";
-String classDivMensagem = "";
+String classDivVisualizacao = "div-oculta", classDivMensagem = "",
+	classFotoPerfil = "", classDivAlerta = "";
 String chkAtivoStatus = "";
-String mensagemAlerta, classeDivAlerta = "";
-mensagemAlerta = (String) request.getAttribute("mensagemAlerta");
+String mensagemAlerta = (String) request.getAttribute("mensagemAlerta");
 
 if (mensagemAlerta == null)
 {
 	mensagemAlerta = "";
-	classeDivAlerta = "div-oculta";
+	classDivAlerta = "div-oculta";
 }
 
 if (p != null)
@@ -48,6 +58,9 @@ if (p != null)
 	classDivVisualizacao = "";
 	classDivMensagem = "div-oculta";
 	chkAtivoStatus = (p.getSituacaoPessoa() == 1) ? "Ativo" : "Inativo";
+	
+	if(fotoPerfilBase64 == null || "".equals(fotoPerfilBase64.trim()))
+		classFotoPerfil = "div-oculta";
 }
 else
 {
@@ -58,7 +71,7 @@ else
 <!-- Bootstrap Alerts -->
 <!-- https://getbootstrap.com/docs/4.6/components/alerts/ -->
 <div
-	class="alert alert-primary alert-dismissible fade show <%=classeDivAlerta%>"
+	class="alert alert-primary alert-dismissible fade show <%=classDivAlerta%>"
 	role="alert">
 	<h4 class="alert-heading">Feito!</h4>
 	<%=mensagemAlerta%>
@@ -101,6 +114,18 @@ else
 							out.print(p.getIdPessoa());
 							out.print("\"' >");
 							%>
+					</div>
+				</div>
+				<div class="row mt-3 d-flex justify-content-center <%= classFotoPerfil %>">
+					<div class="col-xl-4">
+						<img alt="Foto de Perfil" class="img-fluid rounded"
+							src="data:<%= fotoPerfilContentType %>;base64,<%= fotoPerfilBase64 %>">
+					</div>
+				</div>
+				<div class="row mt-3 d-flex justify-content-center <%= classFotoPerfil %>">
+					<div class="col-xl-4">
+						<a href="<%= request.getContextPath() %>/fotoperfil/download?idfotoperfil=<%= idFotoPerfil %>"
+							target="_blank">Baixar Foto do Perfil</a>
 					</div>
 				</div>
 				<div class="row mt-3 d-flex justify-content-center">

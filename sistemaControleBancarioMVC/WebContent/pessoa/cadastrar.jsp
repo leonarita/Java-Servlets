@@ -13,11 +13,17 @@ if(doServidor == null || !doServidor)
 		<div class="col-xl-12">
 			<!-- Bootstrap Form Components -->
 			<!-- https://getbootstrap.com/docs/4.6/components/forms/ -->
-			<form action="${pageContext.request.contextPath}/pessoa/cadastrar" method="POST">
+			<form action="${pageContext.request.contextPath}/pessoa/cadastrar" method="POST"
+				 enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="txtNome">Nome</label>
 					<input type="text" class="form-control" name="txtNome"
 						id="txtNome" required="required">
+				</div>
+				<div class="form-group">
+					<label for="fileFotoPerfil">Foto de Perfil</label>
+					<input type="file" class="form-control" name="fileFotoPerfil"
+						id="fileFotoPerfil" required="required">
 				</div>
 				<div class="form-group">
 					<label for="txtEndereco">Endereço</label>

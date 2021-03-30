@@ -1,7 +1,7 @@
-package controller.pessoa;
+package controller.contacomum;
 
 import java.io.IOException;
-//import java.util.Base64;
+import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,22 +11,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import model.ContaComum;
 import model.Pessoa;
+import model.repository.ContaComumRepository;
 import model.repository.PessoaRepository;
 import utils.cookie.CookieUtils;
 
 /**
- * Servlet implementation class VerPessoaServlet
+ * Servlet implementation class ExcluirPessoaServlet
  */
-@WebServlet("/pessoa/ver")
-public class VerPessoaServlet extends HttpServlet
+@WebServlet("/contacomum/excluir")
+public class ExcluirContasComunsServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public VerPessoaServlet()
+	public ExcluirContasComunsServlet()
 	{
 		super();
 		// TODO Auto-generated constructor stub
@@ -42,17 +44,15 @@ public class VerPessoaServlet extends HttpServlet
 		
 		if ("OK".equals(session.getAttribute("usuarioAutenticado")) && CookieUtils.temAutorizacao(request.getCookies()))
 		{
-			int idPessoa = 0;
-			Pessoa p = null;
-			String pIdPessoa = request.getParameter("idpessoa");
-			String nomePessoa = "";
-			//, fotoPerfilBase64 = "", fotoPerfilContentType = "";
+			int idconta = 0;
+			ContaComum c = null;
+			String cIdconta = request.getParameter("idconta");
 			
-			if (pIdPessoa != null)
+			if (cIdconta != null)
 			{
 				try
 				{
-					idPessoa = Integer.parseInt(pIdPessoa);
+					idconta = Integer.parseInt(cIdconta);
 				}
 				catch (Exception e)
 				{
@@ -67,28 +67,14 @@ public class VerPessoaServlet extends HttpServlet
 				}
 			}
 			
-			if (idPessoa > 0)
+			if (idconta > 0)
 			{
-				p = PessoaRepository.recuperarPessoaPorId(idPessoa);
-				
-				if (p != null)
-				{
-					nomePessoa = p.getNomePessoa();
-					/*
-					if(p.getFotoPerfil() != null && p.getFotoPerfil().getArquivo() != null) {
-						fotoPerfilContentType = p.getFotoPerfil().getContentType();
-						fotoPerfilBase64 =
-								Base64.getEncoder().encodeToString(p.getFotoPerfil().getArquivo());
-					}
-					*/
-				}
+				c = ContaComumRepository.recuperarContaComumPorNumeroConta(idconta);
 			}
 			
-			request.setAttribute("tituloPagina", "Perfil de " + nomePessoa);
-			request.setAttribute("pathPagina", "/pessoa/ver.jsp");
-			request.setAttribute("pessoa", p);
-			//request.setAttribute("fotoPerfilContentType", fotoPerfilContentType);
-			//request.setAttribute("fotoPerfilBase64", fotoPerfilBase64);
+			request.setAttribute("tituloPagina", "Confirmar Exclusão da Conta");
+			request.setAttribute("pathPagina", "/contacomum/excluir.jsp");
+			request.setAttribute("conta", c);
 		}
 		else
 		{
@@ -113,16 +99,14 @@ public class VerPessoaServlet extends HttpServlet
 		
 		if ("OK".equals(session.getAttribute("usuarioAutenticado")) && CookieUtils.temAutorizacao(request.getCookies()))
 		{
-			int idPessoa = 0;
-			Pessoa p = null;
-			String nomePessoa = "";
-			String pIdPessoa = request.getParameter("numIdPessoa");
+			long idConta = 0;
+			String pIdConta = request.getParameter("numIdPessoa");
 			
-			if (pIdPessoa != null)
+			if (pIdConta != null)
 			{
 				try
 				{
-					idPessoa = Integer.parseInt(pIdPessoa);
+					idConta = Long.parseLong(pIdConta);
 				}
 				catch (Exception e)
 				{
@@ -137,39 +121,24 @@ public class VerPessoaServlet extends HttpServlet
 				}
 			}
 			
-			if (idPessoa > 0)
+			if (idConta > 0)
 			{
-				p = PessoaRepository.recuperarPessoaPorId(idPessoa);
+				ContaComum c = ContaComumRepository.recuperarContaComumPorNumeroConta(idConta);
 				
-				if (p != null)
+				if (c != null)
 				{
-					p.setNomePessoa(request.getParameter("txtNome"));
-					p.setEnderecoPessoa(request.getParameter("txtEndereco"));
-					p.setCepPessoa(Long.parseLong(request.getParameter("numCep")));
-					p.setTelefonePessoa(request.getParameter("txtTelefone"));
-					p.setEmail(request.getParameter("txtEmail"));
-					p.setRendaPessoa(Double.parseDouble(request.getParameter("numRenda").replace(',', '.')));
-					p.setSituacaoPessoa("on".equals(request.getParameter("chkAtivo")) ? 1 : 0);
-					p.setSenha(request.getParameter("txtSenha"));
-					
-					PessoaRepository.atualizarPessoa(p);
-					
-					request.setAttribute("mensagemAlerta", "Cadastro atualizado com sucesso!");
+					ContaComumRepository.excluirContaComum(c);
+					request.setAttribute("mensagemAlerta", "Conta excluída com sucesso!");
 				}
 			}
 			
-			p = PessoaRepository.recuperarPessoaPorId(idPessoa);
-			
-			if (p != null)
-			{
-				nomePessoa = p.getNomePessoa();
-			}
+			Set<Pessoa> pessoas = PessoaRepository.recuperarPessoas();
 			
 			PessoaRepository.closeEntityManager();
 			
-			request.setAttribute("tituloPagina", "Perfil de " + nomePessoa);
-			request.setAttribute("pathPagina", "/pessoa/ver.jsp");
-			request.setAttribute("pessoa", p);
+			request.setAttribute("pessoasCadastradas", pessoas);
+			request.setAttribute("tituloPagina", "Cadastro de Contas");
+			request.setAttribute("pathPagina", "/contacomum/listar.jsp");
 		}
 		else
 		{

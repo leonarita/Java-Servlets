@@ -4,6 +4,10 @@
 
 $(document).ready(function ()
 {
+	/**
+	 * Definindo as DataTables do Sistema
+	 */
+	 
 	$('#dtPessoas').DataTable({
 		"searching": true,
 		"ordering": true,
@@ -21,4 +25,21 @@ $(document).ready(function ()
 	});
 	
 	$('.dataTables_length').addClass('bs-select');
+	
+	
+	/**
+	 * Controle da obrigatoriedade do campo de submissão de arquivo da foto de perfil
+	 * na página de atualização de pessoa.
+	 */
+	 
+	$("#chkAlterarFotoPerfil").change(function() {
+	    if(this.checked) {
+	    	$("#fileFotoPerfil").removeAttr("disabled");
+	        $("#fileFotoPerfil").attr("required", "required");
+	    }
+	    else {
+	        $("#fileFotoPerfil").removeAttr("required");
+	        $("#fileFotoPerfil").attr("disabled", "disabled");
+	    }
+	});
 });

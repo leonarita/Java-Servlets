@@ -42,7 +42,8 @@ else
 		<div class="col-xl-12">
 			<!-- Bootstrap Form Components -->
 			<!-- https://getbootstrap.com/docs/4.6/components/forms/ -->
-			<form action="${pageContext.request.contextPath}/pessoa/editar" method="POST">
+			<form action="${pageContext.request.contextPath}/pessoa/editar" method="POST"
+				enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="txtNome">Nome</label>
 					<input type="text" class="form-control" name="txtNome"
@@ -50,6 +51,17 @@ else
 						value="<%=p.getNomePessoa()%>">
 					<input type="hidden" name="numIdPessoa" id="numIdPessoa"
 						value="<%=p.getIdPessoa()%>">
+				</div>
+				<div class="form-group  form-check">
+					<input type="checkbox" class="form-check-input" name="chkAlterarFotoPerfil"
+						id="chkAlterarFotoPerfil" checked="checked">
+					<label class="form-check-label" for="chkAtivo">Alterar Foto de Perfil?</label>
+				</div>
+				<div class="form-group">
+					<label for="fileFotoPerfil">Foto de Perfil</label>
+					<input type="file" class="form-control" name="fileFotoPerfil"
+						accept="image/*"
+						id="fileFotoPerfil" required="required">
 				</div>
 				<div class="form-group">
 					<label for="txtEndereco">Endereço</label>

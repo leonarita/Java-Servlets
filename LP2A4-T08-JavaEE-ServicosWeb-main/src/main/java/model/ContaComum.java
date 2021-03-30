@@ -27,7 +27,7 @@ public class ContaComum implements Serializable
 	private static final long serialVersionUID = 1l;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "numeroconta")
 	protected long numeroConta;
 	
