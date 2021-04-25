@@ -12,13 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import model.ContaComum;
-import model.Pessoa;
 import model.repository.ContaComumRepository;
-import model.repository.PessoaRepository;
 import utils.cookie.CookieUtils;
 
 /**
- * Servlet implementation class ExcluirPessoaServlet
+ * Servlet implementation class ExcluirContasComunsServlet
  */
 @WebServlet("/contacomum/excluir")
 public class ExcluirContasComunsServlet extends HttpServlet
@@ -132,11 +130,11 @@ public class ExcluirContasComunsServlet extends HttpServlet
 				}
 			}
 			
-			Set<Pessoa> pessoas = PessoaRepository.recuperarPessoas();
+			Set<ContaComum> contasComuns = ContaComumRepository.recuperarContasComuns();
 			
-			PessoaRepository.closeEntityManager();
+			ContaComumRepository.closeEntityManager();
 			
-			request.setAttribute("pessoasCadastradas", pessoas);
+			request.setAttribute("contasCadastradas", contasComuns);
 			request.setAttribute("tituloPagina", "Cadastro de Contas");
 			request.setAttribute("pathPagina", "/contacomum/listar.jsp");
 		}

@@ -7,6 +7,7 @@ import javax.servlet.http.Cookie;
 public abstract class CookieUtils {
 	
 	public static boolean temAutorizacao(Cookie[] cookies) {
+
 		if(Objects.isNull(cookies)) {
 			return false;
 		}
@@ -16,6 +17,7 @@ public abstract class CookieUtils {
 				return true;
 			}
 		}
+		
 		return false;
 	}
 

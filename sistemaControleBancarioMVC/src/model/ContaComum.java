@@ -49,7 +49,7 @@ public class ContaComum implements Serializable
 	protected double saldoConta;
 	
 	// FetchType.LAZY -> Diz ao provedor de persistência para não buscar as entidades associadas no banco de dados até que elas sejam necessárias.
-	@ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
 	@JoinTable(name = "pessoas_contascomuns", joinColumns = { @JoinColumn(name = "numeroconta", referencedColumnName = "numeroconta") }, 
     inverseJoinColumns = { @JoinColumn(name = "idpessoa", referencedColumnName = "id") })
 	protected Set<Pessoa> pessoas;
